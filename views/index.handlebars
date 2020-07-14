@@ -1,0 +1,37 @@
+<h1>Burger Joint</h1>
+
+<h2>Orders for here</h2>
+
+<ul>
+  {{#each burgers}}
+    {{#unless hungry}}
+      {{> burgers/burger-block devoured=true}}
+    {{/unless}}
+  {{/each}}
+</ul>
+
+<h2>To go orders</h2>
+
+<ul>
+  {{#each burgers}}
+    {{#if hungry}}
+      {{> burgers/burger-block devoured=false}}
+    {{/if}}
+  {{/each}}
+</ul>
+
+<h2>Order a Burger</h2>
+
+<form class="create-form">
+
+  <div class="form-group">
+    <label for="ca">Burger Name:</label>
+    <input type="text" id="ca" name="name">
+  </div>
+    <div>
+        <label for="hungry">Where do you want to eat?</label><br>
+        <input type="radio" name="hungry" value="1" checked> Here!<br>
+        <input type="radio" name="hungry" value="0"> To go!
+    </div>
+  <button type="submit">Send Order</button>
+</form>

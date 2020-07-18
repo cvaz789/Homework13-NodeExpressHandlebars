@@ -1,48 +1,31 @@
-var express = require("express");
+(function executeRule(current, previous /*null when async*/ ) {
 
-var router = express.Router();
+        // Add your code here	
+	
+		gs.addErrorMessage("TSOFT - Restrict Current / Prev. State ");
+	
+        var gr = new GlideRecord("u_solicitud_api");
+// 		var myValue = current.sys_id;
+		var grNumber = gr.sys_id;
+//          gr.addQuery("parent", myValue);
+			gr.addQuery("number", grNumber);
+			gr.query();
 
-var burger = require("../models/burger.js");
+        while (gr.next()) {
 
-router.get("/", function(req, res) {
-    burger.all(function(data) {
-        var hbsObject = {
-          burgers: data
-        };
-        console.log(hbsObject);
-        res.render("index", hbsObject);
-    });
-});
-
-router.post("/api/burgers", function(req, res) {
-    burger.create([
-      "burger_name", "devoured"
-    ], [
-      req.body.burger_name, req.body.devoured
-    ], function(result) {
-      // Send back the ID of the new quote
-      res.json({ id: result.insertId });
-    });
-});
-
-router.put("/api/burgers/:id", function(req, res) {
-    var condition = "id = " + req.params.id;
-  
-    console.log("condition", condition);
-  
-    burger.update({
-      devoured: req.body.devoured
-    }, condition, function(result) {
-      if (result.changedRows == 0) {
-        // If no rows were changed, then the ID must not exist, so 404
-        return res.status(404).end();
-      } else {
-        res.status(200).end();
-      }
-    });
-});
+			current.setAbortAction(true);
+			
+            if (current.u_choice_1 != gr.u_choice_1) {
+				
+// 				if(gr.active == true) {
+					gr.setLimit(1);
+	gs.addErrorMessage("child task found : " + gr.number + "gr active: " + gr.active + " gr estado: " + gr.u_choice_1 + "current state: " + current.u_choice_1);
+					gs.addErrorMessage("No puedes cambiar a una fase distinta al origen");
+// 					current.setAbortAction(true);
+					gs.setRedirect(current);
+// 				}
+            }
+		}
 
 
-
-
-module.exports = router;
+        })(current, previous);
